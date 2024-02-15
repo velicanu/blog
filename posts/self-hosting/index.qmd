@@ -1,0 +1,74 @@
+---
+title: "Hosting your own server"
+author: "Dragos Velicanu"
+date: "2023-02-21"
+categories: [tech]
+---
+
+This post shows how you can take an old computer and use it to host your own website and
+various apps.
+
+## Requirements
+
+* an old laptop / desktop / raspberry pi
+* admin access to your router
+
+![](pi.jpg)
+
+## Steps
+
+You should do the following steps in order since parts of the later steps require previous steps to be working.
+
+### Install linux
+
+Install Ubuntu (or your favorite linux) on your machine. You’ll probably need a usb drive. There are good instructions on how to do this online.
+
+### Setup SSH
+
+Set up openssh-server on the machine you just installed linux. You can start with a username and password, although eventually you’ll want to use a private / public key pair to sign in since it’s both more convenient and more secure. I recommend following a guide on how to do this properly.
+
+After doing this you should be able to ssh into your machine from another computer on the same network.
+
+### Port forward
+
+On your router, forward the external port 80 (http), 443 (https) and port 22 (ssh) to the internal server. If you set this up correctly you should be able to ssh into your web server from outside your home network.
+
+```
+ssh username@public-ip-address
+```
+
+You can find your public ip address by going to a page like https://whatismyip.org/ from a computer on wifi.
+
+### Install a web server
+
+Install a webserver on your machine, I recommend nginx , via something like:
+
+```
+sudo apt install nginx
+sudo systemctl start nginx
+```
+
+If all goes well, check that you can see a default web page at:
+
+```    
+http://localhost , on the machine running nginx
+http://lan-ip-address , on another machine on your network.
+http://public-ip-address , on your phone using mobile network
+```
+
+### Get a domain
+
+Get a domain name, something like www.yoursite.com. One place to do this is at Cloudflare . This will cost anywhere from 12$ / year to significantly more if you are trying to get a domain that’s in high demand. You can try a few options and pick one where you like the name and the price.
+
+After getting the domain, set the DNS records so the domain points to your public ip address. Google how to do this, there is also a way to use a dynamic dns so that this mapping happens automatically, even if your public ip address changes.
+
+If you did this correctly then you should see your web server’s page when you go to
+www.yoursite.com
+
+### Setup https with letsencrypt
+
+Use letsencrypt to setup https for your web server, it’s free and far more secure than using the default http.
+
+### Setup streamlit
+
+WIP
